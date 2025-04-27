@@ -20,7 +20,7 @@
 
         <!-- link to Student System Login -->
         <div class="text-center mt-3">
-            <a class="btn btn-primary" href="students/student_login.php">Go to Student Login</a>
+            <a class="btn btn-primary" href="user/user_login.php">Go to Student Login</a>
         </div>
 
         <!-- link to UTEP HelpDesk -->
