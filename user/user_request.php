@@ -2,7 +2,6 @@
 session_start();
 require_once('../config.php');
 
-// Check if user is logged in
 if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
     header("Location: user_login.php");
     exit();
@@ -10,7 +9,6 @@ if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true)
 
 $visitor_id = $_SESSION['visitor_id'];
 
-// Get all requests for this user
 $sql = "SELECT r.*, s.SFName, s.SLName 
         FROM Request r
         LEFT JOIN Staff s ON r.SId = s.SId

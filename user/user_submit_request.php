@@ -2,7 +2,6 @@
 session_start();
 require_once('../config.php');
 
-// Check if user is logged in
 if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
     header("Location: user_login.php");
     exit();
@@ -10,7 +9,6 @@ if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true)
 
 $visitor_id = $_SESSION['visitor_id'];
 
-// Get user information
 $query = "SELECT * FROM Visitor WHERE VId = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $visitor_id);
@@ -18,18 +16,15 @@ $stmt->execute();
 $result = $stmt->get_result();
 $visitor = $result->fetch_assoc();
 
-// Handle form submission
 if (isset($_POST['Submit-request'])) {
     $staff_id = 1; // Default staff ID or assign randomly
     $description = isset($_POST['description']) ? $_POST['description'] : "";
     $department = isset($_POST['department']) ? $_POST['department'] : "";
     $request_method = isset($_POST['request_method']) ? $_POST['request_method'] : "";
     
-    // Validate request info
     if (empty($description) || empty($department) || empty($request_method)) {
         $error_message = "Please fill all request information fields.";
     } else {
-        // Insert request
         $queryRequest = "INSERT INTO Request (VId, SId, Description, Status, Department, RequestMethodology, Timestamp) 
                         VALUES (?, ?, ?, 'pending', ?, ?, NOW())";
         $stmt = $conn->prepare($queryRequest);

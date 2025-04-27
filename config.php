@@ -1,17 +1,3 @@
-<!--
-/**
- * CS 4342 Database Management
- * @author Instruction team Spring 2021 with contribution from L. Garnica
- * @version 2.0
- * Description: The purpose of these file is to provide PhP basic elements for an interface to access a DB. 
- * Resources: https://getbootstrap.com/docs/4.5/components/alerts/  -- bootstrap examples
- * Resources: https://www.utep.edu/cs/support/FAQs%20Knowledge%20Base.html -- CS Department FAQ's for accessing servers
- *
- * MAKE SURE YOU HAVE CREATED THE TABLES provided in the CreateTablesFirst.txt file before running this files.
- */
--->
-
-<!-- Establishes connection to MySQL database -->
 <?php
 // Database variables
 $host = "dbserver2.utep.edu"; #enter the DB server location

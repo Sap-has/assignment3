@@ -11,12 +11,11 @@ if (isset($_POST['Submit'])) {
     $lname = isset($_POST['lname']) ? $_POST['lname'] : "";
     $email = isset($_POST['email']) ? $_POST['email'] : "";
     $phone = isset($_POST['phone']) ? $_POST['phone'] : "";
+    $type  = isset($_POST['type']) ? $_POST['type'] : "";
     
-    // Validate form data
-    if (empty($fname) || empty($lname) || empty($email)) {
+    if (empty($fname) || empty($lname) || empty($email) || empty($type)) {
         $error_message = "Please fill all required fields.";
     } else {
-        // Check if email already exists
         $query = "SELECT * FROM Visitor WHERE VEmail = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $email);
@@ -26,17 +25,14 @@ if (isset($_POST['Submit'])) {
         if ($result->num_rows > 0) {
             $error_message = "This email is already registered. Please use a different email or login.";
         } else {
-            // Insert new visitor with student type
             try {
-                // Use stored procedure to create visitor
-                $stmt = $conn->prepare("CALL create_visitor(?, ?, ?, ?, 'student')");
-                $stmt->bind_param("ssss", $fname, $minit, $lname, $email);
+                $stmt = $conn->prepare("CALL create_visitor(?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $fname, $minit, $lname, $email, $type);
                 $stmt->execute();
                 $result = $stmt->get_result();
                 $row = $result->fetch_assoc();
                 $visitor_id = $row['visitor_id'];
                 
-                // Add phone number if provided
                 if (!empty($phone)) {
                     $phoneStmt = $conn->prepare("CALL add_visitor_phone(?, ?)");
                     $phoneStmt->bind_param("is", $visitor_id, $phone);
@@ -101,9 +97,9 @@ if (isset($_POST['Submit'])) {
                     </div>
                     
                     <div class="form-group">
-                        <label for="password">Password <span class="text-danger">*</span></label>
-                        <input class="form-control" type="password" id="password" name="password" required>
-                        <small class="form-text text-muted">For this system, use your last name as your password</small>
+                        <label for="type">Type <span class="text-danger">*</span></label>
+                        <input class="form-control" type="type" id="type" name="type" required>
+                        <small class="form-text text-muted">What is your type?</small>
                     </div>
                     
                     <div class="form-group">

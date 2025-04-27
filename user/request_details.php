@@ -2,7 +2,6 @@
 session_start();
 require_once('../config.php');
 
-// Check if user is logged in
 if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
     header("Location: user_login.php");
     exit();
@@ -10,10 +9,8 @@ if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true)
 
 $visitor_id = $_SESSION['visitor_id'];
 
-// Get request ID from URL
 $request_id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-// Validate that this request belongs to the logged-in user
 $sql = "SELECT r.*, s.SFName, s.SLName 
         FROM Request r
         LEFT JOIN Staff s ON r.SId = s.SId
@@ -24,7 +21,6 @@ $stmt->bind_param("ii", $request_id, $visitor_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// If no valid request found, redirect
 if ($result->num_rows == 0) {
     header("Location: user_requests.php");
     exit();

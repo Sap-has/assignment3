@@ -1,3 +1,12 @@
+<?php
+session_start();
+require_once('../config.php');
+if (empty($_SESSION['user_logged_in'])) {
+  header('Location: user_login.php');
+  exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,22 +17,20 @@
 </head>
 <body>
     <div class="container mt-4">
+        <p>Your Visitor ID: <?=htmlspecialchars($_SESSION['visitor_id'])?></p>
         <h1 class="text-center">user Dashboard</h1>
         <div class="text-center mb-4">
             <p>Welcome, <?php echo isset($_SESSION['visitor_name']) ? $_SESSION['visitor_name'] : 'user'; ?>!</p>
         </div>
 
-        <!-- link to make a request -->
         <div class="text-center mt-3">
             <a class="btn btn-primary" href="user_submit_request.php">Make a request</a>
         </div>
 
-        <!-- link to view requests -->
         <div class="text-center mt-3">
-            <a class="btn btn-primary" href="user_requests.php">View your requests</a>
+            <a class="btn btn-primary" href="user_request.php">View your requests</a>
         </div>
 
-        <!-- link to logout -->
         <div class="text-center mt-3">
             <a class="btn btn-primary" href="user_logout.php">Log out</a>
         </div>
