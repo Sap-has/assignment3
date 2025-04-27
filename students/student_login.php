@@ -52,36 +52,35 @@
 
 </html>
 
-
 <?php
-// login screen where users enter credentials
-
 session_start();
 require_once("../config.php");
-$_SESSION['logged_in'] = false;
+$_SESSION['student_logged_in'] = false;
 
 if (!empty($_POST)) {
   if (isset($_POST['Submit'])) {
-    $input_username = isset($_POST['username']) ? $_POST['username'] : " ";
+    $input_email = isset($_POST['username']) ? $_POST['username'] : " ";
     $input_password = isset($_POST['password']) ? $_POST['password'] : " ";
 
-    $queryUser = "SELECT * FROM User  WHERE Uusername='" . $input_username . "' AND UPassword='" . $input_password . "';";
-    $resultUser = $conn->query($queryUser);
+    // In a real application, you would validate against a properly secured password
+    // For this example, we'll authenticate based on email and last name
+    $queryStudent = "SELECT * FROM Visitor WHERE VEmail=? AND VLName=? AND VType='student'";
+    $stmt = $conn->prepare($queryStudent);
+    $stmt->bind_param("ss", $input_email, $input_password);
+    $stmt->execute();
+    $resultStudent = $stmt->get_result();
 
-    if ($resultUser->num_rows > 0) {
-      //if there is a result, that means that the user was found in the database
-      $_SESSION['user'] = $input_username;
-      $_SESSION['logged_in'] = true;
+    if ($resultStudent->num_rows > 0) {
+      $student = $resultStudent->fetch_assoc();
+      $_SESSION['visitor_id'] = $student['VId'];
+      $_SESSION['visitor_name'] = $student['VFname'] . " " . $student['VLName'];
+      $_SESSION['student_logged_in'] = true;
       
-      echo "Session logged_in is: ".$_SESSION['logged_in'];
-      
-      // You can comment the next line (header) to check if the user was successfully logged in. 
-      // But it will not redirect to the student_menu file automatically.
       header("Location: student_view.php");
+      exit();
     } else {
-      echo "User not found.";
+      echo "<div class='alert alert-danger'>Student not found or credentials incorrect.</div>";
     }
-    die();
   }
 }
 ?>

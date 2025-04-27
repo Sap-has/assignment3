@@ -4,6 +4,17 @@ require_once('../config.php');
 
 // Check if visitor is logged in
 $visitor_logged_in = isset($_SESSION['visitor_id']);
+<?php if (!$visitor_logged_in): ?>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Returning Visitor?</h5>
+        </div>
+        <div class="card-body">
+            <p>If you've submitted a request before, you can login with your email:</p>
+            <a href="visitor_login.php" class="btn btn-secondary">Login as Returning Visitor</a>
+        </div>
+    </div>
+<?php endif; ?>
 
 // Handle form submission
 if (isset($_POST['Submit-request'])) {
