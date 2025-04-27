@@ -2,9 +2,9 @@
 session_start();
 require_once('../config.php');
 
-// Check if student is logged in
-if (!isset($_SESSION['student_logged_in']) || $_SESSION['student_logged_in'] !== true) {
-    header("Location: student_login.php");
+// Check if user is logged in
+if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+    header("Location: user_login.php");
     exit();
 }
 
@@ -13,7 +13,7 @@ $visitor_id = $_SESSION['visitor_id'];
 // Get request ID from URL
 $request_id = isset($_GET['id']) ? $_GET['id'] : 0;
 
-// Validate that this request belongs to the logged-in student
+// Validate that this request belongs to the logged-in user
 $sql = "SELECT r.*, s.SFName, s.SLName 
         FROM Request r
         LEFT JOIN Staff s ON r.SId = s.SId
@@ -26,7 +26,7 @@ $result = $stmt->get_result();
 
 // If no valid request found, redirect
 if ($result->num_rows == 0) {
-    header("Location: student_requests.php");
+    header("Location: user_requests.php");
     exit();
 }
 
@@ -47,7 +47,7 @@ $request = $result->fetch_assoc();
         <h1>Request Details</h1>
         
         <div class="mb-3">
-            <a href="student_requests.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Requests</a>
+            <a href="user_requests.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Requests</a>
         </div>
         
         <div class="card">

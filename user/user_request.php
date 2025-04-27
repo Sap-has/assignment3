@@ -2,15 +2,15 @@
 session_start();
 require_once('../config.php');
 
-// Check if student is logged in
-if (!isset($_SESSION['student_logged_in']) || $_SESSION['student_logged_in'] !== true) {
-    header("Location: student_login.php");
+// Check if user is logged in
+if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+    header("Location: user_login.php");
     exit();
 }
 
 $visitor_id = $_SESSION['visitor_id'];
 
-// Get all requests for this student
+// Get all requests for this user
 $sql = "SELECT r.*, s.SFName, s.SLName 
         FROM Request r
         LEFT JOIN Staff s ON r.SId = s.SId
@@ -37,8 +37,8 @@ $result = $stmt->get_result();
         <h1>My Help Desk Requests</h1>
         
         <div class="mb-3">
-            <a href="student_view.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <a href="student_submit_request.php" class="btn btn-primary float-right"><i class="fas fa-plus"></i> New Request</a>
+            <a href="user_view.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="user_submit_request.php" class="btn btn-primary float-right"><i class="fas fa-plus"></i> New Request</a>
         </div>
         
         <div class="table-responsive">

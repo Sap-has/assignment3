@@ -2,15 +2,15 @@
 session_start();
 require_once('../config.php');
 
-// Check if student is logged in
-if (!isset($_SESSION['student_logged_in']) || $_SESSION['student_logged_in'] !== true) {
-    header("Location: student_login.php");
+// Check if user is logged in
+if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+    header("Location: user_login.php");
     exit();
 }
 
 $visitor_id = $_SESSION['visitor_id'];
 
-// Get student information
+// Get user information
 $query = "SELECT * FROM Visitor WHERE VId = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $visitor_id);
@@ -67,7 +67,7 @@ if (isset($_POST['Submit-request'])) {
                 <?php if (isset($success_message)): ?>
                     <div class="alert alert-success"><?php echo $success_message; ?></div>
                     <div class="text-center mt-4">
-                        <a href="student_requests.php" class="btn btn-primary">View Your Requests</a>
+                        <a href="user_requests.php" class="btn btn-primary">View Your Requests</a>
                     </div>
                 <?php else: ?>
                 
@@ -81,7 +81,7 @@ if (isset($_POST['Submit-request'])) {
                     </div>
                 </div>
                 
-                <form action="student_submit_request.php" method="post">
+                <form action="user_submit_request.php" method="post">
                     <div class="form-group">
                         <label for="department">Department <span class="text-danger">*</span></label>
                         <select class="form-control" id="department" name="department" required>
@@ -116,7 +116,7 @@ if (isset($_POST['Submit-request'])) {
         </div>
         
         <div class="text-center mt-3">
-            <a href="student_view.php">Back to Dashboard</a>
+            <a href="user_view.php">Back to Dashboard</a>
         </div>
     </div>
     

@@ -26,7 +26,7 @@
   <div style="margin-top: 20px" class="container">
     
     <h1>User Login</h1>
-    <form action="student_login.php" method="post">
+    <form action="user_login.php" method="post">
       <div class="form-group">
         <label for="username">User Name</label>
         <input class="form-control" type="text" id="username" name="username">
@@ -39,7 +39,7 @@
         <input class="btn btn-primary" name='Submit' type="submit" value="Submit">
       </div>
     </form>
-    <a href="student_signup.php">Don't have an account? Create one now!</a><br><br>
+    <a href="user_signup.php">Don't have an account? Create one now!</a><br><br>
     
   </div>
 
@@ -55,7 +55,7 @@
 <?php
 session_start();
 require_once("../config.php");
-$_SESSION['student_logged_in'] = false;
+$_SESSION['user_logged_in'] = false;
 
 if (!empty($_POST)) {
   if (isset($_POST['Submit'])) {
@@ -64,22 +64,22 @@ if (!empty($_POST)) {
 
     // In a real application, you would validate against a properly secured password
     // For this example, we'll authenticate based on email and last name
-    $queryStudent = "SELECT * FROM Visitor WHERE VEmail=? AND VLName=? AND VType='student'";
-    $stmt = $conn->prepare($queryStudent);
+    $queryuser = "SELECT * FROM Visitor WHERE VEmail=? AND VLName=? AND VType='user'";
+    $stmt = $conn->prepare($queryuser);
     $stmt->bind_param("ss", $input_email, $input_password);
     $stmt->execute();
-    $resultStudent = $stmt->get_result();
+    $resultuser = $stmt->get_result();
 
-    if ($resultStudent->num_rows > 0) {
-      $student = $resultStudent->fetch_assoc();
-      $_SESSION['visitor_id'] = $student['VId'];
-      $_SESSION['visitor_name'] = $student['VFname'] . " " . $student['VLName'];
-      $_SESSION['student_logged_in'] = true;
+    if ($resultuser->num_rows > 0) {
+      $user = $resultuser->fetch_assoc();
+      $_SESSION['visitor_id'] = $user['VId'];
+      $_SESSION['visitor_name'] = $user['VFname'] . " " . $user['VLName'];
+      $_SESSION['user_logged_in'] = true;
       
-      header("Location: student_view.php");
+      header("Location: user_view.php");
       exit();
     } else {
-      echo "<div class='alert alert-danger'>Student not found or credentials incorrect.</div>";
+      echo "<div class='alert alert-danger'>user not found or credentials incorrect.</div>";
     }
   }
 }

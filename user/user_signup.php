@@ -64,7 +64,7 @@ if (isset($_POST['Submit'])) {
     <div class="container mt-4">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Student Sign Up</h2>
+                <h2 class="text-center">User Sign Up</h2>
             </div>
             <div class="card-body">
                 <?php if (!empty($error_message)): ?>
@@ -74,7 +74,7 @@ if (isset($_POST['Submit'])) {
                 <?php if (!empty($success_message)): ?>
                     <div class="alert alert-success"><?php echo $success_message; ?></div>
                     <div class="text-center">
-                        <a href="student_login.php" class="btn btn-primary">Go to Login</a>
+                        <a href="user_login.php" class="btn btn-primary">Go to Login</a>
                     </div>
                 <?php else: ?>
                 
@@ -117,7 +117,7 @@ if (isset($_POST['Submit'])) {
                 </form>
                 
                 <div class="text-center mt-3">
-                    <p>Already have an account? <a href="student_login.php">Log in</a></p>
+                    <p>Already have an account? <a href="user_login.php">Log in</a></p>
                 </div>
                 <?php endif; ?>
             </div>
