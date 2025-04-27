@@ -28,7 +28,7 @@
     <h1>User Login</h1>
     <form action="user_login.php" method="post">
       <div class="form-group">
-        <label for="username">User Name</label>
+        <label for="username">User Name(email)</label>
         <input class="form-control" type="text" id="username" name="username">
       </div>
       <div class="form-group">
