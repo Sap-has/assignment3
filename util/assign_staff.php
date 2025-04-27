@@ -1,16 +1,25 @@
 <?php
-// Include this function in your config.php or in a utility file
+/**
+ * Utility function to randomly assign a staff member to a request
+ */
 function assignRandomStaff($conn) {
-    // Get all staff IDs
+    // Get all staff members
     $query = "SELECT SId FROM Staff";
     $result = $conn->query($query);
     
-    $staff_ids = array();
+    // Store staff IDs in an array
+    $staffIds = array();
     while ($row = $result->fetch_assoc()) {
-        $staff_ids[] = $row['SId'];
+        $staffIds[] = $row['SId'];
     }
     
-    // Return a random staff ID or null if no staff exists
-    return !empty($staff_ids) ? $staff_ids[array_rand($staff_ids)] : null;
+    // If no staff exists, return 1 (default)
+    if (count($staffIds) == 0) {
+        return 1;
+    }
+    
+    // Return a random staff ID
+    $randomIndex = array_rand($staffIds);
+    return $staffIds[$randomIndex];
 }
 ?>
