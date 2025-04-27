@@ -38,7 +38,7 @@ $result = $stmt->get_result();
         
         <div class="mb-3">
             <a href="student_view.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <a href="submit_request.php" class="btn btn-primary float-right"><i class="fas fa-plus"></i> New Request</a>
+            <a href="student_submit_request.php" class="btn btn-primary float-right"><i class="fas fa-plus"></i> New Request</a>
         </div>
         
         <div class="table-responsive">
@@ -52,6 +52,7 @@ $result = $stmt->get_result();
                         <th>Method</th>
                         <th>Timestamp</th>
                         <th>Assigned Staff</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,10 +80,11 @@ $result = $stmt->get_result();
                             echo "<td>" . ucfirst($row['RequestMethodology']) . "</td>";
                             echo "<td>" . date('M d, Y g:i A', strtotime($row['Timestamp'])) . "</td>";
                             echo "<td>" . ($row['SFName'] ? "{$row['SFName']} {$row['SLName']}" : "Not Assigned") . "</td>";
+                            echo "<td><a href='request_details.php?id={$row['RId']}' class='btn btn-sm btn-info'>View</a></td>";
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='7' class='text-center'>You haven't submitted any requests yet.</td></tr>";
+                        echo "<tr><td colspan='8' class='text-center'>You haven't submitted any requests yet.</td></tr>";
                     }
                     ?>
                 </tbody>

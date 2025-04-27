@@ -1,20 +1,10 @@
 <?php
 session_start();
 require_once('../config.php');
+require_once('../util/assign_staff.php');
 
 // Check if visitor is logged in
 $visitor_logged_in = isset($_SESSION['visitor_id']);
-<?php if (!$visitor_logged_in): ?>
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Returning Visitor?</h5>
-        </div>
-        <div class="card-body">
-            <p>If you've submitted a request before, you can login with your email:</p>
-            <a href="visitor_login.php" class="btn btn-secondary">Login as Returning Visitor</a>
-        </div>
-    </div>
-<?php endif; ?>
 
 // Handle form submission
 if (isset($_POST['Submit-request'])) {
@@ -31,17 +21,21 @@ if (isset($_POST['Submit-request'])) {
         if (empty($fname) || empty($lname) || empty($email) || empty($visitor_type) || empty($phone)) {
             $error_message = "Please fill all visitor information fields.";
         } else {
-            // Insert visitor
-            $queryVisitor = "INSERT INTO Visitor (VFname, VMinit, VLName, VEmail, VType) 
-                            VALUES ('$fname', '$minit', '$lname', '$email', '$visitor_type')";
+            // Use stored procedure to create visitor
+            $stmt = $conn->prepare("CALL create_visitor(?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $fname, $minit, $lname, $email, $visitor_type);
+            $stmt->execute();
+            $result = $stmt->get_result();
             
-            if ($conn->query($queryVisitor) === TRUE) {
-                $visitor_id = $conn->insert_id;
+            if ($result) {
+                $row = $result->fetch_assoc();
+                $visitor_id = $row['visitor_id'];
                 
                 // Insert phone number
-                $queryPhone = "INSERT INTO VisitorPhone (VId, VPhoneNumber) VALUES ('$visitor_id', '$phone')";
+                $phoneStmt = $conn->prepare("CALL add_visitor_phone(?, ?)");
+                $phoneStmt->bind_param("is", $visitor_id, $phone);
                 
-                if ($conn->query($queryPhone) === TRUE) {
+                if ($phoneStmt->execute()) {
                     // Set visitor session
                     $_SESSION['visitor_id'] = $visitor_id;
                     $_SESSION['visitor_name'] = $fname . " " . $lname;
@@ -57,7 +51,8 @@ if (isset($_POST['Submit-request'])) {
     // Now we can process the request
     if (!isset($error_message)) {
         $visitor_id = $_SESSION['visitor_id'];
-        $staff_id = 1; // Default staff ID (in a real system you'd assign this properly)
+        // Assign a random staff member
+        $staff_id = assignRandomStaff($conn);
         $description = isset($_POST['description']) ? $_POST['description'] : "";
         $department = isset($_POST['department']) ? $_POST['department'] : "";
         $request_method = isset($_POST['request_method']) ? $_POST['request_method'] : "";
@@ -66,12 +61,15 @@ if (isset($_POST['Submit-request'])) {
         if (empty($description) || empty($department) || empty($request_method)) {
             $error_message = "Please fill all request information fields.";
         } else {
-            // Insert request
-            $queryRequest = "INSERT INTO Request (VId, SId, Description, Status, Department, RequestMethodology, Timestamp) 
-                            VALUES ('$visitor_id', '$staff_id', '$description', 'pending', '$department', '$request_method', NOW())";
+            // Use stored procedure to create request
+            $stmt = $conn->prepare("CALL create_request(?, ?, ?, ?, ?)");
+            $stmt->bind_param("iisss", $visitor_id, $staff_id, $description, $department, $request_method);
+            $stmt->execute();
+            $result = $stmt->get_result();
             
-            if ($conn->query($queryRequest) === TRUE) {
-                $request_id = $conn->insert_id;
+            if ($result) {
+                $row = $result->fetch_assoc();
+                $request_id = $row['request_id'];
                 $success_message = "Request submitted successfully! Your request ID is: " . $request_id;
             } else {
                 $error_message = "Error submitting request: " . $conn->error;
@@ -83,8 +81,11 @@ if (isset($_POST['Submit-request'])) {
 // Get visitor information if logged in
 if ($visitor_logged_in) {
     $visitor_id = $_SESSION['visitor_id'];
-    $query = "SELECT * FROM Visitor WHERE VId = '$visitor_id'";
-    $result = $conn->query($query);
+    $query = "SELECT * FROM Visitor WHERE VId = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $visitor_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
         $visitor = $result->fetch_assoc();
@@ -139,9 +140,21 @@ if ($visitor_logged_in) {
                 <?php if (isset($success_message)): ?>
                     <div class="alert alert-success"><?php echo $success_message; ?></div>
                     <div class="text-center mt-4">
-                        <a href="index.php" class="btn btn-primary">Return to Home</a>
+                        <a href="../index.php" class="btn btn-primary">Return to Home</a>
                     </div>
                 <?php else: ?>
+                
+                <?php if (!$visitor_logged_in): ?>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Returning Visitor?</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>If you've submitted a request before, you can login with your email:</p>
+                        <a href="visitor_login.php" class="btn btn-secondary">Login as Returning Visitor</a>
+                    </div>
+                </div>
+                <?php endif; ?>
                 
                 <form action="submit_request.php" method="post">
                     <?php if (!$visitor_logged_in): ?>
