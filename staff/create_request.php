@@ -35,19 +35,31 @@ $search_error   = '';
 // Step 1A: Search for existing visitor
 // ——————————————————————
 if (isset($_POST['search_visitor'])) {
-    $search_email = trim($_POST['search_email'] ?? '');
-    if (empty($search_email)) {
-        $search_error = "Please enter an email to search.";
+    $term = trim($_POST['search_term'] ?? '');
+
+    if ($term === '') {
+        $search_error = "Please enter an ID or an email to search.";
     } else {
-        $stmt = $conn->prepare("SELECT * FROM Visitor WHERE VEmail = ?");
-        $stmt->bind_param("s", $search_email);
+        // decide which query based on whether it's all digits
+        if (ctype_digit($term)) {
+            // numeric → search by VId
+            $stmt = $conn->prepare("SELECT * FROM Visitor WHERE VId = ?");
+            $stmt->bind_param("i", $term);
+        } else {
+            // otherwise → search by email
+            $stmt = $conn->prepare("SELECT * FROM Visitor WHERE VEmail = ?");
+            $stmt->bind_param("s", $term);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
+
+        if ($result && $result->num_rows > 0) {
             $visitor       = $result->fetch_assoc();
             $visitor_found = true;
         } else {
-            $search_error = "No visitor found with that email.";
+            $search_error = "No visitor found with that " .
+                (ctype_digit($term) ? "ID." : "email.");
         }
     }
 }
@@ -148,6 +160,29 @@ if (isset($_POST['submit_request'])) {
   <title>Create Help Desk Request</title>
   <link rel="stylesheet" href="../path/to/bootstrap.css">
   <script src="https://kit.fontawesome.com/yourkit.js"></script>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
+  <style>
+    html, body {
+      height: 100%;
+      background-color: #f8f9fa;
+    }
+    .container {
+      padding-top: 30px;
+      padding-bottom: 30px;
+    }
+    .card {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .card-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .submit-button {
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
   <div class="container mt-4">
@@ -170,19 +205,27 @@ if (isset($_POST['submit_request'])) {
     <?php endif; ?>
 
     <?php if (! $visitor_found): ?>
-      <!-- Step 1: Find or Create Visitor -->
       <div class="card mb-4">
         <div class="card-header"><h4>Step 1: Find Visitor</h4></div>
         <div class="card-body">
-          <form method="post">
-            <div class="form-group">
-              <label for="search_email">Email</label>
-              <input type="email" class="form-control" id="search_email" name="search_email" required>
-            </div>
-            <button type="submit" name="search_visitor" class="btn btn-primary">
-              <i class="fas fa-search"></i> Search
-            </button>
-          </form>
+        <form method="post" class="mb-4">
+        <div class="form-group">
+            <label for="search_term">Visitor ID or Email</label>
+            <input
+            type="text"
+            class="form-control"
+            id="search_term"
+            name="search_term"
+            placeholder="Enter visitor’s ID number or email address"
+            required
+            >
+        </div>
+        <button
+            type="submit"
+            name="search_visitor"
+            class="btn btn-primary"
+        ><i class="fas fa-search"></i> Search</button>
+        </form>
           <hr>
           <h5>Or Create New Visitor</h5>
           <form method="post">
