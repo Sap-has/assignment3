@@ -2,11 +2,11 @@
 session_start();
 require_once('../config.php');
 
-// Check if staff is logged in
-if (!isset($_SESSION['staff_logged_in']) || $_SESSION['staff_logged_in'] !== true) {
-    header("Location: staffLogin.php");
-    exit();
+if (!isset($_SESSION['SId'])) {
+  header('Location: staff_login.php');
+  exit;
 }
+$loggedInStaffId = $_SESSION['SId'];
 
 $staff_id = $_SESSION['staff_id'];
 $visitor_found = false;

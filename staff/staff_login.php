@@ -29,7 +29,7 @@ if (isset($_POST['Submit'])) {
             $_SESSION['staff_logged_in'] = true;
             
             // Redirect to staff dashboard
-            header("Location: staff_dashboard.php");
+            header("Location: staff_view.php");
             exit();
         } else {
             $error_message = "Invalid Staff ID. Please try again.";

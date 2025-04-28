@@ -2,11 +2,11 @@
 session_start();
 require_once('../config.php');
 
-// Check if staff is logged in
-if (!isset($_SESSION['staff_logged_in']) || $_SESSION['staff_logged_in'] !== true) {
-    header("Location: staffLogin.php");
-    exit();
+if (!isset($_SESSION['SId'])) {
+  header('Location: staff_login.php');
+  exit;
 }
+$loggedInStaffId = $_SESSION['SId'];
 
 // Get staff ID from session
 $staff_id = $_SESSION['staff_id'];
@@ -83,8 +83,8 @@ $result = $conn->query($sql);
         
         <!-- Navigation links -->
         <div class="mb-3">
-            <a href="dashboard.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <a href="add_request.php" class="btn btn-success float-right"><i class="fas fa-plus"></i> Add New Request</a>
+            <a href="staff_view.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="create_request.php" class="btn btn-success float-right"><i class="fas fa-plus"></i> Add New Request</a>
         </div>
         
         <!-- Filter Section -->

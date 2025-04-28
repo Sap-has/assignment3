@@ -1,10 +1,13 @@
-<?php
+<?php 
 session_start();
-// Check if staff is logged in
-if (!isset($_SESSION['staff_logged_in']) || $_SESSION['staff_logged_in'] !== true) {
-    header("Location: staffLogin.php");
-    exit();
+require_once('../config.php');
+
+if (!isset($_SESSION['SId'])) {
+  header('Location: staff_login.php');
+  exit;
 }
+$loggedInStaffId = $_SESSION['SId'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +19,7 @@ if (!isset($_SESSION['staff_logged_in']) || $_SESSION['staff_logged_in'] !== tru
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
-    <div class="container mt-4">
+        <div class="container mt-4">
         <h1 class="text-center">Staff Dashboard</h1>
         <div class="alert alert-success">
             <?php echo "Logged in as Staff ID: " . $_SESSION['staff_id']; ?>
