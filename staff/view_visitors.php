@@ -2,14 +2,12 @@
 session_start();
 require_once('../config.php');
 
-// 1. Authentication check
 if (!isset($_SESSION['SId'])) {
     header('Location: staff_login.php');
     exit;
 }
 $loggedInStaffId = $_SESSION['SId'];
 
-// 2. Fetch all visitors
 $sql  = "SELECT VId, VFname, VMinit, VLName, VEmail, VType 
          FROM Visitor
          ORDER BY VLName, VFname";
@@ -43,7 +41,7 @@ $result = $stmt->get_result();
             <td><?= htmlspecialchars($row['VId']) ?></td>
             <td>
               <?= htmlspecialchars($row['VFname']) ?>
-              <?= htmlspecialchars($row['VMinit']) ?><!-- if empty, prints nothing -->
+              <?= htmlspecialchars($row['VMinit']) ?>
               <?= htmlspecialchars($row['VLName']) ?>
             </td>
             <td><?= htmlspecialchars($row['VEmail']) ?></td>
