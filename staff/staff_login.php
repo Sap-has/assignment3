@@ -28,7 +28,7 @@ if (isset($_POST['Submit'])) {
             $_SESSION['staff_name'] = $staff['SFName'] . " " . $staff['SLName'];
             $_SESSION['staff_logged_in'] = true;
             
-            // Redirect to staff dashboard
+            $_SESSION['SId'] = $staff_id;
             header("Location: staff_view.php");
             exit();
         } else {
