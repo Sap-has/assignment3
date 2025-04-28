@@ -60,6 +60,9 @@ $result = $stmt->get_result();
         <?php endif; ?>
         </tbody>
     </table>
+    <div class="text-center mt-3">
+        <a href="user_view.php" class="btn btn-primary">Back</a>
+    </div>
 </div>
 </body>
 </html>
